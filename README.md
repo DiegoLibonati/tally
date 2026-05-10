@@ -6,15 +6,6 @@ This project was created primarily for **educational and learning purposes**.
 While it is well-structured and could technically be used in production, it is **not intended for commercialization**.  
 The main goal is to explore and demonstrate best practices, patterns, and technologies in software development.
 
-## Getting Started
-
-1. Clone the repository
-2. Navigate to the project folder
-3. Execute: `npm install`
-4. Execute: `npm run dev`
-
-The application will open automatically at `http://localhost:3000`
-
 ## Description
 
 **Tally** is a minimalist counter web application built with vanilla TypeScript and zero runtime dependencies. It renders a single interactive counter that lets the user increment, decrement, or reset a numeric value displayed on screen.
@@ -35,6 +26,8 @@ The project is fully covered by an automated test suite using Jest, Testing Libr
 4. Vite
 
 ## Libraries used
+
+The stack above is wired together through the following packages — no production dependencies are pulled in at runtime, all tooling lives in `devDependencies`.
 
 #### Dependencies
 
@@ -66,11 +59,20 @@ No production dependencies - Pure Vanilla TypeScript
 "vite": "^7.1.6"
 ```
 
-## Portfolio Link
+## Getting Started
 
-[`https://www.diegolibonati.com.ar/#/project/tally`](https://www.diegolibonati.com.ar/#/project/tally)
+With the dependencies above in mind, the local setup is a straightforward Node workflow:
+
+1. Clone the repository
+2. Navigate to the project folder
+3. Execute: `npm install`
+4. Execute: `npm run dev`
+
+The application will open automatically at `http://localhost:3000`.
 
 ## Testing
+
+Once the app runs locally, the same toolchain powers the automated test suite (Jest + Testing Library + jsdom):
 
 1. Navigate to the project folder
 2. Execute: `npm test`
@@ -81,7 +83,9 @@ For coverage report:
 npm run test:coverage
 ```
 
-## Security
+## Security Audit
+
+Beyond the test suite, dependency health is validated through npm's built-in audit tool.
 
 ### npm audit
 
@@ -94,3 +98,7 @@ npm audit
 ## Known Issues
 
 None at the moment.
+
+## Portfolio Link
+
+[`https://www.diegolibonati.com.ar/#/project/tally`](https://www.diegolibonati.com.ar/#/project/tally)
