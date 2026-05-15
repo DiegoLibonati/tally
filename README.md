@@ -70,6 +70,14 @@ With the dependencies above in mind, the local setup is a straightforward Node w
 
 The application will open automatically at `http://localhost:3000`.
 
+## CI/CD
+
+Every push and pull request to `main` triggers a GitHub Actions pipeline with three sequential jobs:
+
+1. **Lint & Audit** — runs ESLint and `tsc --noEmit`
+2. **Testing** — runs the full Jest suite (requires Lint & Audit to pass)
+3. **Build** — runs `vite build` (requires Testing to pass)
+
 ## Testing
 
 Once the app runs locally, the same toolchain powers the automated test suite (Jest + Testing Library + jsdom):

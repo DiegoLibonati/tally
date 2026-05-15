@@ -31,16 +31,19 @@ describe("Action", () => {
   describe("rendering", () => {
     it("should render a button element", () => {
       renderComponent();
+
       expect(screen.getByRole("button")).toBeInTheDocument();
     });
 
     it("should set the id attribute", () => {
       renderComponent();
+
       expect(screen.getByRole("button")).toHaveAttribute("id", "action-btn");
     });
 
     it("should set the aria-label attribute", () => {
       renderComponent();
+
       expect(
         screen.getByRole("button", { name: "Click me" })
       ).toBeInTheDocument();
@@ -48,16 +51,19 @@ describe("Action", () => {
 
     it("should apply the action class and the given className", () => {
       renderComponent();
+
       expect(screen.getByRole("button")).toHaveClass("action", "primary");
     });
 
     it("should set the button type to button", () => {
       renderComponent();
+
       expect(screen.getByRole("button")).toHaveAttribute("type", "button");
     });
 
     it("should render the children as inner content", () => {
       renderComponent();
+
       expect(screen.getByRole("button")).toHaveTextContent("Click");
     });
   });
@@ -66,7 +72,9 @@ describe("Action", () => {
     it("should call onClick when the button is clicked", async () => {
       const user = userEvent.setup();
       renderComponent();
+
       await user.click(screen.getByRole("button"));
+
       expect(mockOnClick).toHaveBeenCalledTimes(1);
     });
 
@@ -74,14 +82,17 @@ describe("Action", () => {
       const user = userEvent.setup();
       renderComponent();
       const button = screen.getByRole("button");
+
       await user.click(button);
       await user.click(button);
       await user.click(button);
+
       expect(mockOnClick).toHaveBeenCalledTimes(3);
     });
 
     it("should not call onClick when not clicked", () => {
       renderComponent();
+
       expect(mockOnClick).not.toHaveBeenCalled();
     });
   });
@@ -89,21 +100,32 @@ describe("Action", () => {
   describe("edge cases", () => {
     it("should render empty content when children is undefined", () => {
       renderComponent({ children: undefined! });
+
       expect(screen.getByRole("button")).toHaveTextContent("");
     });
 
     it("should apply only the action class when className is undefined", () => {
       renderComponent({ className: undefined! });
+
       expect(screen.getByRole("button")).toHaveClass("action");
+      expect(screen.getByRole("button")).not.toHaveClass("undefined");
     });
   });
 
   describe("cleanup", () => {
+    it("should expose a cleanup method", () => {
+      const element = renderComponent();
+
+      expect(typeof element.cleanup).toBe("function");
+    });
+
     it("should remove the click listener after cleanup is called", async () => {
       const user = userEvent.setup();
       const element = renderComponent();
+
       element.cleanup?.();
       await user.click(screen.getByRole("button"));
+
       expect(mockOnClick).not.toHaveBeenCalled();
     });
   });

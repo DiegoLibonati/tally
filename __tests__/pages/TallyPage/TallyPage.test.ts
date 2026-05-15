@@ -20,6 +20,7 @@ describe("TallyPage", () => {
   describe("rendering", () => {
     it("should render the main element with the tally-page class", () => {
       renderPage();
+
       const main = document.querySelector<HTMLElement>("main");
       expect(main).toBeInTheDocument();
       expect(main).toHaveClass("tally-page");
@@ -27,6 +28,7 @@ describe("TallyPage", () => {
 
     it("should render the Counter heading", () => {
       renderPage();
+
       expect(
         screen.getByRole("heading", { name: "Counter", level: 2 })
       ).toBeInTheDocument();
@@ -34,11 +36,13 @@ describe("TallyPage", () => {
 
     it("should render the initial count as 0", () => {
       renderPage();
+
       expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("0");
     });
 
     it("should render the Increase button", () => {
       renderPage();
+
       expect(
         screen.getByRole("button", { name: "Increase counter" })
       ).toBeInTheDocument();
@@ -46,6 +50,7 @@ describe("TallyPage", () => {
 
     it("should render the Decrease button", () => {
       renderPage();
+
       expect(
         screen.getByRole("button", { name: "Decrease counter" })
       ).toBeInTheDocument();
@@ -53,6 +58,7 @@ describe("TallyPage", () => {
 
     it("should render the Reset button", () => {
       renderPage();
+
       expect(
         screen.getByRole("button", { name: "Reset counter" })
       ).toBeInTheDocument();
@@ -64,9 +70,11 @@ describe("TallyPage", () => {
       it("should increment the count when Increase is clicked", async () => {
         const user = userEvent.setup();
         renderPage();
+
         await user.click(
           screen.getByRole("button", { name: "Increase counter" })
         );
+
         expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
           "1"
         );
@@ -78,9 +86,11 @@ describe("TallyPage", () => {
         const increaseBtn = screen.getByRole("button", {
           name: "Increase counter",
         });
+
         await user.click(increaseBtn);
         await user.click(increaseBtn);
         await user.click(increaseBtn);
+
         expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
           "3"
         );
@@ -91,9 +101,11 @@ describe("TallyPage", () => {
       it("should decrement the count when Decrease is clicked", async () => {
         const user = userEvent.setup();
         renderPage();
+
         await user.click(
           screen.getByRole("button", { name: "Decrease counter" })
         );
+
         expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
           "-1"
         );
@@ -105,8 +117,10 @@ describe("TallyPage", () => {
         const decreaseBtn = screen.getByRole("button", {
           name: "Decrease counter",
         });
+
         await user.click(decreaseBtn);
         await user.click(decreaseBtn);
+
         expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
           "-2"
         );
@@ -117,6 +131,7 @@ describe("TallyPage", () => {
       it("should reset a positive count to 0 when Reset is clicked", async () => {
         const user = userEvent.setup();
         renderPage();
+
         await user.click(
           screen.getByRole("button", { name: "Increase counter" })
         );
@@ -124,6 +139,7 @@ describe("TallyPage", () => {
           screen.getByRole("button", { name: "Increase counter" })
         );
         await user.click(screen.getByRole("button", { name: "Reset counter" }));
+
         expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
           "0"
         );
@@ -132,10 +148,12 @@ describe("TallyPage", () => {
       it("should reset a negative count to 0 when Reset is clicked", async () => {
         const user = userEvent.setup();
         renderPage();
+
         await user.click(
           screen.getByRole("button", { name: "Decrease counter" })
         );
         await user.click(screen.getByRole("button", { name: "Reset counter" }));
+
         expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
           "0"
         );
@@ -146,9 +164,11 @@ describe("TallyPage", () => {
       it("should apply green color when count is positive", async () => {
         const user = userEvent.setup();
         renderPage();
+
         await user.click(
           screen.getByRole("button", { name: "Increase counter" })
         );
+
         const numberEl =
           document.querySelector<HTMLHeadingElement>(".counter__number");
         expect(numberEl?.style.color).toBe("var(--color-green)");
@@ -157,9 +177,11 @@ describe("TallyPage", () => {
       it("should apply red color when count is negative", async () => {
         const user = userEvent.setup();
         renderPage();
+
         await user.click(
           screen.getByRole("button", { name: "Decrease counter" })
         );
+
         const numberEl =
           document.querySelector<HTMLHeadingElement>(".counter__number");
         expect(numberEl?.style.color).toBe("var(--color-red)");
@@ -168,10 +190,12 @@ describe("TallyPage", () => {
       it("should apply black color when count is reset to zero from positive", async () => {
         const user = userEvent.setup();
         renderPage();
+
         await user.click(
           screen.getByRole("button", { name: "Increase counter" })
         );
         await user.click(screen.getByRole("button", { name: "Reset counter" }));
+
         const numberEl =
           document.querySelector<HTMLHeadingElement>(".counter__number");
         expect(numberEl?.style.color).toBe("var(--color-black)");
@@ -180,10 +204,44 @@ describe("TallyPage", () => {
       it("should apply black color when count is reset to zero from negative", async () => {
         const user = userEvent.setup();
         renderPage();
+
         await user.click(
           screen.getByRole("button", { name: "Decrease counter" })
         );
         await user.click(screen.getByRole("button", { name: "Reset counter" }));
+
+        const numberEl =
+          document.querySelector<HTMLHeadingElement>(".counter__number");
+        expect(numberEl?.style.color).toBe("var(--color-black)");
+      });
+
+      it("should apply black color when count returns to zero by increasing from negative", async () => {
+        const user = userEvent.setup();
+        renderPage();
+
+        await user.click(
+          screen.getByRole("button", { name: "Decrease counter" })
+        );
+        await user.click(
+          screen.getByRole("button", { name: "Increase counter" })
+        );
+
+        const numberEl =
+          document.querySelector<HTMLHeadingElement>(".counter__number");
+        expect(numberEl?.style.color).toBe("var(--color-black)");
+      });
+
+      it("should apply black color when count returns to zero by decreasing from positive", async () => {
+        const user = userEvent.setup();
+        renderPage();
+
+        await user.click(
+          screen.getByRole("button", { name: "Increase counter" })
+        );
+        await user.click(
+          screen.getByRole("button", { name: "Decrease counter" })
+        );
+
         const numberEl =
           document.querySelector<HTMLHeadingElement>(".counter__number");
         expect(numberEl?.style.color).toBe("var(--color-black)");
@@ -192,9 +250,16 @@ describe("TallyPage", () => {
   });
 
   describe("cleanup", () => {
+    it("should expose a cleanup method", () => {
+      const page = renderPage();
+
+      expect(typeof page.cleanup).toBe("function");
+    });
+
     it("should remove all click listeners and prevent count changes after cleanup", async () => {
       const user = userEvent.setup();
       const page = renderPage();
+
       page.cleanup?.();
       await user.click(
         screen.getByRole("button", { name: "Increase counter" })
@@ -203,6 +268,7 @@ describe("TallyPage", () => {
         screen.getByRole("button", { name: "Decrease counter" })
       );
       await user.click(screen.getByRole("button", { name: "Reset counter" }));
+
       expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("0");
     });
   });
