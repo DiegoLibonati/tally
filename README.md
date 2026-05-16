@@ -70,14 +70,6 @@ With the dependencies above in mind, the local setup is a straightforward Node w
 
 The application will open automatically at `http://localhost:3000`.
 
-## CI/CD
-
-Every push and pull request to `main` triggers a GitHub Actions pipeline with three sequential jobs:
-
-1. **Lint & Audit** — runs ESLint and `tsc --noEmit`
-2. **Testing** — runs the full Jest suite (requires Lint & Audit to pass)
-3. **Build** — runs `vite build` (requires Testing to pass)
-
 ## Testing
 
 Once the app runs locally, the same toolchain powers the automated test suite (Jest + Testing Library + jsdom):
@@ -90,6 +82,50 @@ For coverage report:
 ```bash
 npm run test:coverage
 ```
+
+## Continuous Integration
+
+The repository ships with a **GitHub Actions** pipeline defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml). It runs automatically on every `push` and `pull_request` targeting the `main` branch.
+
+### Pipeline overview
+
+```
+                      ┌─── PR or push to main ───┐
+                      ▼                          ▼
+┌──────────────────────┐  ┌──────────────────┐  ┌──────────────────┐
+│   lint-and-audit     │─▶│     testing      │─▶│      build       │
+│ eslint · tsc --noEmit│  │  jest (jsdom)    │  │    vite build    │
+└──────────────────────┘  └──────────────────┘  └──────────────────┘
+```
+
+Every job runs on `ubuntu-latest`, reads the Node version from [`.nvmrc`](.nvmrc), installs dependencies with `npm ci`, and depends on the previous one — if `lint-and-audit` fails, `testing` and `build` are skipped automatically.
+
+### Validation jobs (run on every PR and push)
+
+1. **`lint-and-audit`** — runs `npm run lint` (ESLint with explicit return types, interfaces over types, type imports, and `===` enforced) and `npm run type-check` (`tsc --noEmit` against `tsconfig.json`).
+2. **`testing`** — runs `npm run test`, which executes the full Jest + Testing Library + jsdom suite in verbose mode. Requires `lint-and-audit` to pass.
+3. **`build`** — runs `npm run build`, which type-checks the project and produces the production bundle via Vite. Requires `testing` to pass. The build acts as a smoke test; the resulting `dist/` folder is not uploaded as an artifact.
+
+### Running the same checks locally
+
+```bash
+# lint-and-audit
+npm run lint
+npm run type-check
+
+# testing
+npm test
+
+# build
+npm run build
+```
+
+### Where the build outputs live
+
+| Output                                           | Location                     |
+| ------------------------------------------------ | ---------------------------- |
+| Validation logs (lint, type-check, tests, build) | **Actions** tab on GitHub    |
+| Production bundle (`dist/`)                      | Ephemeral, inside the runner |
 
 ## Security Audit
 
